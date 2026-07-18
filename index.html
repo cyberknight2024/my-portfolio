@@ -27,7 +27,6 @@
             cursor: crosshair; 
         }
 
-        /* --- NEW: CUSTOM HIGHLIGHT COLOR --- */
         ::selection {
             background-color: var(--matrix-green);
             color: #000;
@@ -137,7 +136,6 @@
     <div class="noise-overlay"></div>
     <div class="crt-scanline"></div>
 
-    <!-- NEW: DRAGGABLE MEMO PAD -->
     <div id="draggable-memo" class="absolute top-4 right-4 md:top-20 md:right-20 w-56 bg-[#ffffe0] border-4 border-black shadow-[8px_8px_0_0_#000] z-[9900] transform rotate-3 select-none cursor-grab active:cursor-grabbing">
         <div class="bg-black text-white px-2 py-1 flex justify-between items-center text-[10px] font-bold tracking-widest uppercase border-b-4 border-black">
             <span>MEMO.TXT</span>
@@ -159,7 +157,6 @@
             </p>
         </div>
         
-        <!-- NEW: LIVE SYS CLOCK -->
         <div class="bg-black border-2 border-[var(--matrix-green)] p-3 shadow-[4px_4px_0_0_var(--matrix-green)] font-mono text-[var(--matrix-green)] shrink-0">
             <div class="text-[10px] tracking-widest mb-1 opacity-70">SYS_TIME (IST)</div>
             <div id="live-clock" class="text-2xl font-bold">00:00:00</div>
@@ -170,7 +167,6 @@
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             
-            <!-- CARD 1: BIO / ID -->
             <div class="md:col-span-2 brutal-card bg-[#f4f0e6] p-6 flex flex-col md:flex-row gap-6">
                 <div class="w-full md:w-1/3 space-y-4">
                     <div class="aspect-square bg-slate-300 border-4 border-black relative overflow-hidden flex items-center justify-center">
@@ -204,7 +200,6 @@
                 </div>
             </div>
 
-            <!-- CARD 2: CRT MONITOR -->
             <div class="brutal-card bg-[#d4d0c8] p-4 relative flex flex-col items-center justify-center min-h-[300px] border-b-[16px] border-r-[8px] border-[#a3a099] shadow-inner">
                 <div class="w-full flex-grow bg-[#e6e4dc] border-[12px] border-t-[16px] border-b-[24px] border-[#b5b3a8] rounded-[2rem] p-3 flex flex-col shadow-[inset_4px_4px_10px_rgba(0,0,0,0.2)]">
                     <div class="w-full h-full bg-[#050505] rounded-3xl relative overflow-hidden p-5 font-mono shadow-[inset_0_0_30px_rgba(0,0,0,1)] flex flex-col items-center justify-center border-4 border-[#111]">
@@ -222,7 +217,6 @@
                 </div>
             </div>
 
-            <!-- CARD 3: EDUCATION -->
             <div class="md:col-span-3 brutal-card bg-[#eeba2b] p-8 flex flex-col md:flex-row justify-between gap-10">
                 <div class="md:w-1/2">
                     <h2 class="heading-brutal text-5xl md:text-6xl mb-8 glitch-hover">Education</h2>
@@ -247,7 +241,6 @@
                 </div>
             </div>
 
-            <!-- CARD 4: CORE SKILLS -->
             <div class="brutal-card bg-[#df673b] p-6 text-white">
                 <div class="flex justify-between items-start mb-4">
                     <h2 class="heading-brutal text-4xl">Core<br>Skills</h2>
@@ -259,7 +252,6 @@
                 </div>
             </div>
 
-            <!-- CARD 5: TOOLS & TECH -->
             <div class="md:col-span-2 brutal-card bg-[#7cb691] p-6">
                 <div class="flex justify-between items-start">
                     <h2 class="heading-brutal text-4xl mb-4">Tools &<br>Technologies</h2>
@@ -287,9 +279,7 @@
             </div>
         </div>
 
-        <!-- NEW FUNCTIONAL ROW -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <!-- SECURE COMMS TERMINAL -->
             <div class="md:col-span-2 brutal-card bg-[#050505] p-6 border-4 border-[#39ff14] shadow-[8px_8px_0_0_#39ff14] text-[#39ff14] font-mono">
                 <div class="flex justify-between items-start mb-4 border-b-2 border-[#39ff14] pb-2">
                     <h2 class="font-bold text-2xl tracking-widest uppercase">SECURE COMMS.exe</h2>
@@ -312,14 +302,13 @@
                         <textarea name="message" rows="3" class="w-full bg-transparent border border-[#39ff14] p-2 focus:outline-none focus:bg-[#39ff14]/20 text-white resize-none" required></textarea>
                     </div>
                     
-                    <!-- WE CHANGED THIS BUTTON SO IT SUBMITS INSTEAD OF SHOWING AN ALERT -->
+                    <!-- THE FIX: Make sure type="submit" and NO onclick attribute is here -->
                     <button type="submit" class="self-start bg-[#39ff14] text-black font-bold py-2 px-6 hover:bg-white hover:text-black border-2 border-[#39ff14] hover:border-white transition-colors uppercase cursor-pointer">
                         [ TRANSMIT DATA ]
                     </button>
                 </form>
             </div>
 
-            <!-- DOWNLOAD DOSSIER -->
             <a href="resumetcs-1.pdf" download="Arghyadeep_Sarkar_Resume.pdf" class="brutal-card bg-[#1769ff] p-6 flex flex-col items-center justify-center text-white hover:bg-black group transition-colors border-black cursor-pointer z-50 shadow-[8px_8px_0_0_#111]">
                 <div class="text-7xl mb-4 group-hover:animate-spin-slow">💾</div>
                 <h2 class="heading-brutal text-3xl text-center mb-4">DOWNLOAD<br>DOSSIER</h2>
@@ -329,7 +318,6 @@
             </a>
         </div>
 
-        <!-- ACTION BUTTONS -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
             <a href="projects.html" class="block brutal-card bg-[#eeba2b] p-8 text-center border-4 border-black hover:bg-black hover:text-[#eeba2b] transition-all group hover:-translate-y-2 cursor-pointer z-50">
                 <div class="text-6xl mb-4 group-hover:animate-bounce">📁</div>
@@ -346,7 +334,6 @@
 
     </main>
 
-    <!-- Marquee Footer -->
     <div class="border-y-4 border-[#0f0] bg-black text-[#0f0] py-2 overflow-hidden mb-10 relative z-10">
         <div class="whitespace-nowrap font-mono text-sm uppercase tracking-widest animate-[marquee_20s_linear_infinite]" style="display: inline-block;">
             *** SYSTEM SECURE *** ALL SYSTEMS NOMINAL *** UNAUTHORIZED ACCESS ATTEMPT LOGGED *** WELCOME USER_ARGHYADEEP *** *** SYSTEM SECURE *** ALL SYSTEMS NOMINAL *** UNAUTHORIZED ACCESS ATTEMPT LOGGED *** WELCOME USER_ARGHYADEEP ***
@@ -360,7 +347,6 @@
     </footer>
 
     <script>
-        // --- 1. DATA VISUALIZATION ---
         const initCharts = () => {
             const ctx = document.getElementById('skillsChart').getContext('2d');
             new Chart(ctx, {
@@ -373,7 +359,6 @@
             });
         };
 
-        // --- 2. CARD TILT EFFECT ---
         const initTilt = () => {
             const cards = document.querySelectorAll('.brutal-card');
             cards.forEach(card => {
@@ -387,7 +372,6 @@
             });
         };
 
-        // --- 3. CRT MONITOR BOOT SEQUENCE ---
         const initCrtMonitor = () => {
             const container = document.getElementById('crt-screen-text');
             const lines = [
@@ -418,7 +402,6 @@
             setTimeout(typeCrtLine, 1000);
         };
 
-        // --- 4. LIVE SYSTEM CLOCK (IST) ---
         const initClock = () => {
             const clockEl = document.getElementById('live-clock');
             setInterval(() => {
@@ -428,7 +411,6 @@
             }, 1000);
         };
 
-        // --- 5. DRAGGABLE WINDOW LOGIC ---
         const initDraggable = () => {
             const memo = document.getElementById('draggable-memo');
             let isDragging = false, currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
