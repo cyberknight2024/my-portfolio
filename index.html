@@ -15,6 +15,7 @@
             --card-yellow: #eeba2b;
             --card-orange: #df673b;
             --card-green: #7cb691;
+            --matrix-green: #39ff14;
             --border-dark: #111111;
         }
 
@@ -23,7 +24,13 @@
             font-family: 'Space Grotesk', sans-serif;
             color: var(--border-dark);
             overflow-x: hidden;
-            cursor: crosshair; /* Hacker cursor globally */
+            cursor: crosshair; 
+        }
+
+        /* --- NEW: CUSTOM HIGHLIGHT COLOR --- */
+        ::selection {
+            background-color: var(--matrix-green);
+            color: #000;
         }
 
         .heading-brutal {
@@ -32,7 +39,6 @@
             line-height: 0.9;
         }
 
-        /* --- CRT AND RETRO EFFECTS --- */
         .crt::before {
             content: " ";
             display: block;
@@ -69,7 +75,6 @@
             background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
         }
 
-        /* Neo-Brutalist Card Styling */
         .brutal-card {
             border: 4px solid var(--border-dark);
             border-radius: 12px;
@@ -89,7 +94,6 @@
             box-shadow: 0px 0px 0px var(--border-dark);
         }
 
-        /* Glitch Hover Animation */
         .glitch-hover {
             position: relative;
             display: inline-block;
@@ -112,57 +116,61 @@
             100% { transform: translate(1px, -2px) rotate(-1deg); }
         }
 
-        @keyframes blink-cursor {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-        .cursor-blink {
-            animation: blink-cursor 1s step-end infinite;
-        }
+        @keyframes blink-cursor { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        .cursor-blink { animation: blink-cursor 1s step-end infinite; }
 
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-        .animate-float {
-            animation: float 4s ease-in-out infinite;
-        }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        .animate-float { animation: float 4s ease-in-out infinite; }
+
+        @keyframes spin-slow { 100% { transform: rotate(360deg); } }
+        .animate-spin-slow { animation: spin-slow 8s linear infinite; }
         
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 100%;
-            height: 250px;
-            margin-top: 1rem;
-        }
+        .chart-container { position: relative; width: 100%; max-width: 100%; height: 250px; margin-top: 1rem; }
 
         ::-webkit-scrollbar { width: 12px; }
         ::-webkit-scrollbar-track { background: var(--bg-dark); }
-        ::-webkit-scrollbar-thumb { 
-            background: var(--card-yellow); 
-            border: 3px solid var(--bg-dark);
-        }
+        ::-webkit-scrollbar-thumb { background: var(--card-yellow); border: 3px solid var(--bg-dark); }
     </style>
 </head>
-<body class="p-4 md:p-10 crt">
+<body class="p-4 md:p-10 crt relative">
 
     <div class="noise-overlay"></div>
     <div class="crt-scanline"></div>
 
-    <header class="max-w-6xl mx-auto mb-12 text-white relative">
-        <h1 class="heading-brutal text-5xl md:text-7xl mb-4 text-white glitch-hover">ARGHYADEEP<br>SARKAR</h1>
-        <p class="text-xl md:w-2/3 text-slate-400">
-            Aspiring <span class="text-card-green font-bold">Cybersecurity Professional</span>, <span class="text-card-yellow font-bold">Filmmaker</span>, and <span class="text-card-orange font-bold">Design Enthusiast</span>. Fusing analytical security engineering with creative storytelling.
-        </p>
+    <!-- NEW: DRAGGABLE MEMO PAD -->
+    <div id="draggable-memo" class="absolute top-4 right-4 md:top-20 md:right-20 w-56 bg-[#ffffe0] border-4 border-black shadow-[8px_8px_0_0_#000] z-[9900] transform rotate-3 select-none cursor-grab active:cursor-grabbing">
+        <div class="bg-black text-white px-2 py-1 flex justify-between items-center text-[10px] font-bold tracking-widest uppercase border-b-4 border-black">
+            <span>MEMO.TXT</span>
+            <span class="cursor-pointer hover:text-red-500" onclick="document.getElementById('draggable-memo').style.display='none'">[X]</span>
+        </div>
+        <div class="p-4 text-xs font-mono leading-tight">
+            > HACK THE MAINFRAME<br>
+            > BREW COFFEE<br>
+            > DECRYPT FILES<br><br>
+            <span class="text-gray-500 italic">(Drag me around!)</span>
+        </div>
+    </div>
+
+    <header class="max-w-6xl mx-auto mb-12 relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+        <div>
+            <h1 class="heading-brutal text-5xl md:text-7xl mb-4 text-white glitch-hover">ARGHYADEEP<br>SARKAR</h1>
+            <p class="text-xl md:w-4/5 text-slate-400">
+                Aspiring <span class="text-card-green font-bold">Cybersecurity Professional</span>, <span class="text-card-yellow font-bold">Filmmaker</span>, and <span class="text-card-orange font-bold">Design Enthusiast</span>.
+            </p>
+        </div>
+        
+        <!-- NEW: LIVE SYS CLOCK -->
+        <div class="bg-black border-2 border-[var(--matrix-green)] p-3 shadow-[4px_4px_0_0_var(--matrix-green)] font-mono text-[var(--matrix-green)] shrink-0">
+            <div class="text-[10px] tracking-widest mb-1 opacity-70">SYS_TIME (IST)</div>
+            <div id="live-clock" class="text-2xl font-bold">00:00:00</div>
+        </div>
     </header>
 
     <main class="max-w-6xl mx-auto z-10 relative">
         
-        <!-- THE BENTO GRID -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             
-            <!-- CARD 1: BIO / ID (Cream) -->
+            <!-- CARD 1: BIO / ID -->
             <div class="md:col-span-2 brutal-card bg-[#f4f0e6] p-6 flex flex-col md:flex-row gap-6">
                 <div class="w-full md:w-1/3 space-y-4">
                     <div class="aspect-square bg-slate-300 border-4 border-black relative overflow-hidden flex items-center justify-center">
@@ -189,34 +197,22 @@
                     </div>
 
                     <div class="flex flex-wrap gap-3 mt-auto">
-                        <a href="https://www.linkedin.com/in/arghyadeepsarkar" target="_blank" class="inline-block bg-[#0077b5] text-white px-3 py-2 border-2 border-black hover:bg-white hover:text-black transition-colors font-bold text-sm z-50">
-                            LinkedIn
-                        </a>
-                        <a href="https://github.com/cyberknight2024" target="_blank" class="inline-block bg-[#333] text-white px-3 py-2 border-2 border-black hover:bg-white hover:text-black transition-colors font-bold text-sm z-50">
-                            GitHub
-                        </a>
-                        <a href="https://www.behance.net/arghyadsarkar" target="_blank" class="inline-block bg-[#1769ff] text-white px-3 py-2 border-2 border-black hover:bg-white hover:text-black transition-colors font-bold text-sm z-50">
-                            Behance
-                        </a>
+                        <a href="https://www.linkedin.com/in/arghyadeepsarkar" target="_blank" class="inline-block bg-[#0077b5] text-white px-3 py-2 border-2 border-black hover:bg-white hover:text-black transition-colors font-bold text-sm z-50">LinkedIn</a>
+                        <a href="https://github.com/cyberknight2024" target="_blank" class="inline-block bg-[#333] text-white px-3 py-2 border-2 border-black hover:bg-white hover:text-black transition-colors font-bold text-sm z-50">GitHub</a>
+                        <a href="https://www.behance.net/arghyadsarkar" target="_blank" class="inline-block bg-[#1769ff] text-white px-3 py-2 border-2 border-black hover:bg-white hover:text-black transition-colors font-bold text-sm z-50">Behance</a>
                     </div>
                 </div>
             </div>
 
-            <!-- CARD 2: CRT MONITOR (Retro Boot Sequence) -->
+            <!-- CARD 2: CRT MONITOR -->
             <div class="brutal-card bg-[#d4d0c8] p-4 relative flex flex-col items-center justify-center min-h-[300px] border-b-[16px] border-r-[8px] border-[#a3a099] shadow-inner">
-                <!-- Monitor Bezel -->
                 <div class="w-full flex-grow bg-[#e6e4dc] border-[12px] border-t-[16px] border-b-[24px] border-[#b5b3a8] rounded-[2rem] p-3 flex flex-col shadow-[inset_4px_4px_10px_rgba(0,0,0,0.2)]">
-                    <!-- Monitor Screen -->
                     <div class="w-full h-full bg-[#050505] rounded-3xl relative overflow-hidden p-5 font-mono shadow-[inset_0_0_30px_rgba(0,0,0,1)] flex flex-col items-center justify-center border-4 border-[#111]">
-                        <!-- CRT Scanline overlay -->
                         <div class="absolute inset-0 pointer-events-none opacity-30 mix-blend-overlay" style="background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); background-size: 100% 3px, 3px 100%;"></div>
-                        
-                        <!-- Dynamic Text Container -->
                         <div id="crt-screen-text" class="relative z-10 w-full flex flex-col items-center text-center leading-tight"></div>
                         <div class="absolute bottom-6 right-8 z-10"><span class="cursor-blink text-2xl text-[#39ff14]" style="text-shadow: 0 0 8px #39ff14;">_</span></div>
                     </div>
                 </div>
-                <!-- Monitor Base / Details -->
                 <div class="w-full flex justify-between items-end mt-2 px-6 h-4">
                     <div class="text-[9px] font-bold text-[#666] tracking-widest border border-[#999] px-2 py-0.5 bg-[#c2c0b8] shadow-sm">TEK-SYNC</div>
                     <div class="flex gap-2 items-center bg-[#b5b3a8] p-1 border border-[#999]">
@@ -226,7 +222,7 @@
                 </div>
             </div>
 
-            <!-- CARD 3: EDUCATION (Yellow) -->
+            <!-- CARD 3: EDUCATION -->
             <div class="md:col-span-3 brutal-card bg-[#eeba2b] p-8 flex flex-col md:flex-row justify-between gap-10">
                 <div class="md:w-1/2">
                     <h2 class="heading-brutal text-5xl md:text-6xl mb-8 glitch-hover">Education</h2>
@@ -242,7 +238,6 @@
                     </div>
                 </div>
                 <div class="md:w-1/2 flex items-center justify-center">
-                    <!-- Retro PC Box Illustration -->
                     <div class="w-48 h-48 bg-[#ccc] border-4 border-black relative shadow-[8px_8px_0_0_#999] animate-float">
                         <div class="absolute inset-2 bg-blue-900 border-4 border-black flex items-center justify-center">
                             <span class="text-white text-xs font-mono">C:\><span class="cursor-blink">_</span></span>
@@ -252,37 +247,31 @@
                 </div>
             </div>
 
-            <!-- CARD 4: CORE SKILLS (Orange) -->
+            <!-- CARD 4: CORE SKILLS -->
             <div class="brutal-card bg-[#df673b] p-6 text-white">
                 <div class="flex justify-between items-start mb-4">
                     <h2 class="heading-brutal text-4xl">Core<br>Skills</h2>
-                    <div class="w-12 h-12 bg-white border-2 border-black flex items-center justify-center text-2xl">🛡️</div>
+                    <div class="w-12 h-12 bg-white border-2 border-black flex items-center justify-center text-2xl text-black">🛡️</div>
                 </div>
-                
-                <div class="chart-container">
-                    <canvas id="skillsChart"></canvas>
-                </div>
-
+                <div class="chart-container"><canvas id="skillsChart"></canvas></div>
                 <div class="mt-6 text-xs leading-snug bg-black/20 p-2 border-l-4 border-white">
                     Strong fundamentals in Object Oriented Programming, Computer Networks, Software Engineering, and Network Security.
                 </div>
             </div>
 
-            <!-- CARD 5: TOOLS & TECH (Green) -->
+            <!-- CARD 5: TOOLS & TECH -->
             <div class="md:col-span-2 brutal-card bg-[#7cb691] p-6">
                 <div class="flex justify-between items-start">
                     <h2 class="heading-brutal text-4xl mb-4">Tools &<br>Technologies</h2>
                     <div class="text-4xl inline-block animate-[spin_6s_linear_infinite]">⚙️</div>
                 </div>
-
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mt-6">
-                    <div class="bg-black text-white p-4 border-2 border-black text-center font-bold" title="Python">Py</div>
-                    <div class="bg-black text-white p-4 border-2 border-black text-center font-bold" title="Java">Jv</div>
-                    <div class="bg-black text-white p-4 border-2 border-black text-center font-bold" title="SQL">Sql</div>
-                    <div class="bg-black text-white p-4 border-2 border-black text-center font-bold" title="Wireshark">Ws</div>
-                    <div class="bg-black text-white p-4 border-2 border-black text-center font-bold" title="Burp Suite">Bs</div>
+                    <div class="bg-black text-white p-4 border-2 border-black text-center font-bold">Py</div>
+                    <div class="bg-black text-white p-4 border-2 border-black text-center font-bold">Jv</div>
+                    <div class="bg-black text-white p-4 border-2 border-black text-center font-bold">Sql</div>
+                    <div class="bg-black text-white p-4 border-2 border-black text-center font-bold">Ws</div>
+                    <div class="bg-black text-white p-4 border-2 border-black text-center font-bold">Bs</div>
                 </div>
-
                 <div class="mt-8 p-4 bg-white/30 border-4 border-black border-dashed flex items-center justify-center">
                     <div class="text-center w-full">
                         <span class="block font-bold mb-3">Frameworks & Methodologies</span>
@@ -296,18 +285,54 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
-        <!-- ACTION BUTTONS / FOOTER NAVIGATION -->
+        <!-- NEW FUNCTIONAL ROW -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <!-- SECURE COMMS TERMINAL -->
+            <div class="md:col-span-2 brutal-card bg-[#050505] p-6 border-4 border-[#39ff14] shadow-[8px_8px_0_0_#39ff14] text-[#39ff14] font-mono">
+                <div class="flex justify-between items-start mb-4 border-b-2 border-[#39ff14] pb-2">
+                    <h2 class="font-bold text-2xl tracking-widest uppercase">SECURE COMMS.exe</h2>
+                    <div class="cursor-blink text-2xl">_</div>
+                </div>
+                <form action="#" method="POST" class="flex flex-col gap-4 text-sm mt-4 relative z-50">
+                    <div class="flex items-center gap-2">
+                        <span>> Name:</span>
+                        <input type="text" name="name" class="flex-grow bg-transparent border-b border-[#39ff14] p-1 focus:outline-none focus:bg-[#39ff14]/20 text-white" required>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span>> Email:</span>
+                        <input type="email" name="email" class="flex-grow bg-transparent border-b border-[#39ff14] p-1 focus:outline-none focus:bg-[#39ff14]/20 text-white" required>
+                    </div>
+                    <div class="flex flex-col gap-2">
+                        <span>> Message:</span>
+                        <textarea name="message" rows="3" class="w-full bg-transparent border border-[#39ff14] p-2 focus:outline-none focus:bg-[#39ff14]/20 text-white resize-none" required></textarea>
+                    </div>
+                    <button type="button" onclick="alert('System Alert: Secure Comm Link Offline. (Connect to Formspree in code!)')" class="self-start bg-[#39ff14] text-black font-bold py-2 px-6 hover:bg-white hover:text-black border-2 border-[#39ff14] hover:border-white transition-colors uppercase">
+                        [ TRANSMIT DATA ]
+                    </button>
+                </form>
+            </div>
+
+            <!-- DOWNLOAD DOSSIER -->
+            <a href="resumetcs-1.pdf" download="Arghyadeep_Sarkar_Resume.pdf" class="brutal-card bg-[#1769ff] p-6 flex flex-col items-center justify-center text-white hover:bg-black group transition-colors border-black cursor-pointer z-50 shadow-[8px_8px_0_0_#111]">
+                <div class="text-7xl mb-4 group-hover:animate-spin-slow">💾</div>
+                <h2 class="heading-brutal text-3xl text-center mb-4">DOWNLOAD<br>DOSSIER</h2>
+                <div class="border-2 border-white px-4 py-2 text-xs font-bold uppercase tracking-widest group-hover:bg-white group-hover:text-black transition-colors">
+                    INITIATE .PDF
+                </div>
+            </a>
+        </div>
+
+        <!-- ACTION BUTTONS -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-            <a href="projects.html" class="block brutal-card bg-[#eeba2b] p-8 text-center border-4 border-black hover:bg-black hover:text-[#eeba2b] transition-all group hover:-translate-y-2 cursor-pointer z-50 relative">
+            <a href="projects.html" class="block brutal-card bg-[#eeba2b] p-8 text-center border-4 border-black hover:bg-black hover:text-[#eeba2b] transition-all group hover:-translate-y-2 cursor-pointer z-50">
                 <div class="text-6xl mb-4 group-hover:animate-bounce">📁</div>
                 <h2 class="heading-brutal text-4xl md:text-5xl">VIEW<br>PROJECTS</h2>
                 <p class="font-bold text-sm mt-4 border-t-4 border-current pt-2 uppercase">Access System Logs</p>
             </a>
             
-            <a href="certifications.html" class="block brutal-card bg-[#0f0] p-8 text-center border-4 border-black hover:bg-black hover:text-[#0f0] transition-all group hover:-translate-y-2 cursor-pointer z-50 relative">
+            <a href="certifications.html" class="block brutal-card bg-[#0f0] p-8 text-center border-4 border-black hover:bg-black hover:text-[#0f0] transition-all group hover:-translate-y-2 cursor-pointer z-50">
                 <div class="text-6xl mb-4 group-hover:animate-bounce">📜</div>
                 <h2 class="heading-brutal text-4xl md:text-5xl text-black group-hover:text-[#0f0]">OFFICIAL<br>CERTS</h2>
                 <p class="font-bold text-sm mt-4 border-t-4 border-current pt-2 uppercase text-black group-hover:text-[#0f0]">Verify Credentials</p>
@@ -316,92 +341,48 @@
 
     </main>
 
-    <!-- Marquee Footer for Retro Vibe -->
+    <!-- Marquee Footer -->
     <div class="border-y-4 border-[#0f0] bg-black text-[#0f0] py-2 overflow-hidden mb-10 relative z-10">
         <div class="whitespace-nowrap font-mono text-sm uppercase tracking-widest animate-[marquee_20s_linear_infinite]" style="display: inline-block;">
             *** SYSTEM SECURE *** ALL SYSTEMS NOMINAL *** UNAUTHORIZED ACCESS ATTEMPT LOGGED *** WELCOME USER_ARGHYADEEP *** *** SYSTEM SECURE *** ALL SYSTEMS NOMINAL *** UNAUTHORIZED ACCESS ATTEMPT LOGGED *** WELCOME USER_ARGHYADEEP ***
         </div>
     </div>
-    <style>
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-    </style>
+    <style> @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } } </style>
 
     <footer class="max-w-6xl mx-auto pb-10 text-white/50 text-xs flex justify-between uppercase tracking-tighter relative z-10">
-        <span>Arghyadeep Sarkar-portfolio</span> <!-- Left blank as requested to remove the Architectural prompt text -->
+        <span></span>
+        <span>Interactive Blueprint &copy; 2026</span>
     </footer>
 
     <script>
-        // --- DATA VISUALIZATION ---
+        // --- 1. DATA VISUALIZATION ---
         const initCharts = () => {
             const ctx = document.getElementById('skillsChart').getContext('2d');
-            
             new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: ['Cybersecurity', 'Python/Java', 'Filmmaking', 'Design'],
-                    datasets: [{
-                        label: 'Mastery Level',
-                        data: [90, 85, 75, 80],
-                        backgroundColor: '#111111',
-                        borderColor: '#ffffff',
-                        borderWidth: 2,
-                        borderRadius: 0
-                    }]
+                    datasets: [{ label: 'Mastery Level', data: [90, 85, 75, 80], backgroundColor: '#111111', borderColor: '#ffffff', borderWidth: 2 }]
                 },
-                options: {
-                    indexAxis: 'y',
-                    maintainAspectRatio: false,
-                    responsive: true,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        x: { 
-                            beginAtZero: true, 
-                            max: 100,
-                            grid: { display: false },
-                            ticks: { display: false }
-                        },
-                        y: {
-                            grid: { display: false },
-                            ticks: { 
-                                color: '#ffffff',
-                                font: { weight: 'bold', family: 'Space Grotesk' }
-                            }
-                        }
-                    }
-                }
+                options: { indexAxis: 'y', maintainAspectRatio: false, responsive: true, plugins: { legend: { display: false } }, scales: { x: { display: false, max: 100 }, y: { grid: { display: false }, ticks: { color: '#ffffff', font: { weight: 'bold', family: 'Space Grotesk' } } } } }
             });
         };
 
-        // --- CARD TILT EFFECT ---
+        // --- 2. CARD TILT EFFECT ---
         const initTilt = () => {
             const cards = document.querySelectorAll('.brutal-card');
             cards.forEach(card => {
                 card.addEventListener('mousemove', (e) => {
                     const rect = card.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-                    
-                    const rotateX = (y - centerY) / 25;
-                    const rotateY = (centerX - x) / 25;
-                    
+                    const rotateX = ((e.clientY - rect.top) - (rect.height / 2)) / 25;
+                    const rotateY = ((rect.width / 2) - (e.clientX - rect.left)) / 25;
                     card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
                 });
-
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0)`;
-                });
+                card.addEventListener('mouseleave', () => card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0)`);
             });
         };
 
-        // --- NEW: CRT MONITOR BOOT SEQUENCE ---
+        // --- 3. CRT MONITOR BOOT SEQUENCE ---
         const initCrtMonitor = () => {
             const container = document.getElementById('crt-screen-text');
             const lines = [
@@ -409,46 +390,70 @@
                 { text: "MEM_CHECK... OK", class: "text-xs md:text-sm text-green-500/70 mb-4" },
                 { text: "hello world", class: "text-4xl md:text-5xl heading-brutal text-[#39ff14] mt-2" }
             ];
-            
-            let lineIdx = 0;
-            let charIdx = 0;
-            let currentSpan = null;
+            let lineIdx = 0, charIdx = 0, currentSpan = null;
             
             const typeCrtLine = () => {
                 if (lineIdx < lines.length) {
                     if (charIdx === 0) {
                         currentSpan = document.createElement('div');
                         currentSpan.className = lines[lineIdx].class;
-                        // Add the heavy neon gloom effect to only the final "hello world" text
-                        if(lineIdx === lines.length - 1) {
-                            currentSpan.style.textShadow = "0 0 10px #39ff14, 0 0 20px #39ff14, 0 0 30px #0f0";
-                        }
+                        if(lineIdx === lines.length - 1) currentSpan.style.textShadow = "0 0 10px #39ff14, 0 0 20px #39ff14, 0 0 30px #0f0";
                         container.appendChild(currentSpan);
                     }
-                    
                     if (charIdx < lines[lineIdx].text.length) {
                         currentSpan.innerHTML += lines[lineIdx].text.charAt(charIdx);
                         charIdx++;
-                        // Type "hello world" slower for dramatic effect
-                        let speed = (lineIdx === lines.length - 1) ? 150 : 40;
-                        setTimeout(typeCrtLine, speed);
+                        setTimeout(typeCrtLine, (lineIdx === lines.length - 1) ? 150 : 40);
                     } else {
-                        lineIdx++;
-                        charIdx = 0;
-                        setTimeout(typeCrtLine, 300); // Pause between lines
+                        lineIdx++; charIdx = 0;
+                        setTimeout(typeCrtLine, 300);
                     }
                 }
             };
-            
-            // Start the boot sequence 1 second after page loads
             setTimeout(typeCrtLine, 1000);
         };
 
-        // Initialize Everything
+        // --- 4. LIVE SYSTEM CLOCK (IST) ---
+        const initClock = () => {
+            const clockEl = document.getElementById('live-clock');
+            setInterval(() => {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('en-US', { timeZone: 'Asia/Kolkata', hour12: false });
+                clockEl.textContent = timeString;
+            }, 1000);
+        };
+
+        // --- 5. DRAGGABLE WINDOW LOGIC ---
+        const initDraggable = () => {
+            const memo = document.getElementById('draggable-memo');
+            let isDragging = false, currentX, currentY, initialX, initialY, xOffset = 0, yOffset = 0;
+
+            memo.addEventListener('mousedown', dragStart);
+            document.addEventListener('mouseup', dragEnd);
+            document.addEventListener('mousemove', drag);
+
+            function dragStart(e) {
+                initialX = e.clientX - xOffset;
+                initialY = e.clientY - yOffset;
+                if (e.target.tagName !== 'SPAN') isDragging = true;
+            }
+            function dragEnd(e) { initialX = currentX; initialY = currentY; isDragging = false; }
+            function drag(e) {
+                if (isDragging) {
+                    e.preventDefault();
+                    currentX = e.clientX - initialX; currentY = e.clientY - initialY;
+                    xOffset = currentX; yOffset = currentY;
+                    memo.style.transform = `translate(${currentX}px, ${currentY}px) rotate(0deg)`;
+                }
+            }
+        };
+
         window.addEventListener('DOMContentLoaded', () => {
             initCharts();
             initTilt();
             initCrtMonitor();
+            initClock();
+            initDraggable();
         });
     </script>
 </body>
