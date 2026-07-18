@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro-Brutalist Interactive Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: Neo-Brutalist Sticker Book - High contrast primaries (Yellow, Orange, Green) against an off-black void, using cream as a neutral base. -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;700&display=swap');
+
+        :root {
+            --bg-dark: #121212;
+            --card-cream: #f4f0e6;
+            --card-yellow: #eeba2b;
+            --card-orange: #df673b;
+            --card-green: #7cb691;
+            --border-dark: #111111;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--border-dark);
+            overflow-x: hidden;
+        }
+
+        .heading-brutal {
+            font-family: 'Archivo Black', sans-serif;
+            text-transform: uppercase;
+            line-height: 0.9;
+        }
+
+        /* --- NEW RETRO & ANIMATION EFFECTS --- */
+        .crt::before {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 9998;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100vh); }
+        }
+
+        .crt-scanline {
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(255,255,255,0.1) 50%, rgba(0,0,0,0) 100%);
+            position: fixed;
+            top: 0; left: 0;
+            z-index: 9997;
+            pointer-events: none;
+            animation: scanline 8s linear infinite;
+        }
+
+        @keyframes rotate-slow {
+            100% { transform: rotate(360deg); }
+        }
+        .animate-spin-slow {
+            animation: rotate-slow 6s linear infinite;
+        }
+
+        @keyframes blink-cursor {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .cursor-blink {
+            animation: blink-cursor 1s step-end infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .animate-float {
+            animation: float 4s ease-in-out infinite;
+        }
+        /* ------------------------------------- */
+
+        /* The Grainy Texture Overlay */
+        .noise-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.05;
+            background-image: url("https://www.transparenttextures.com/patterns/stardust.png");
+        }
+
+        /* Neo-Brutalist Card Styling */
+        .brutal-card {
+            border: 4px solid var(--border-dark);
+            border-radius: 12px;
+            box-shadow: 8px 8px 0px var(--border-dark);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brutal-card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 12px 12px 0px var(--border-dark);
+        }
+
+        .brutal-card:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px var(--border-dark);
+        }
+
+        /* Scanline Effect for Rainbow Card */
+        .scanlines {
+            background: linear-gradient(
+                to bottom,
+                rgba(18, 16, 16, 0) 50%,
+                rgba(0, 0, 0, 0.1) 50%
+            );
+            background-size: 100% 4px;
+            z-index: 2;
+        }
+
+        .rainbow-bg {
+            background: linear-gradient(
+                to bottom,
+                #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8f00ff
+            );
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            height: 250px;
+            margin-top: 1rem;
+        }
+
+        .magnetic-wrap {
+            display: inline-block;
+            transition: transform 0.2s ease-out;
+        }
+
+        /* Pixel-ish Scrollbar */
+        ::-webkit-scrollbar { width: 12px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { 
+            background: var(--card-yellow); 
+            border: 3px solid var(--bg-dark);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-10 crt">
+
+    <div class="noise-overlay"></div>
+    <div class="crt-scanline"></div>
+
+    <header class="max-w-6xl mx-auto mb-12 text-white relative">
+        <h1 class="heading-brutal text-5xl md:text-7xl mb-4 text-white">ARGHYADEEP<br>SARKAR</h1>
+        <p class="text-xl md:w-2/3 text-slate-400">
+            Aspiring <span class="text-card-green font-bold">Cybersecurity Professional</span>, <span class="text-card-yellow font-bold">Filmmaker</span>, and <span class="text-card-orange font-bold">Design Enthusiast</span>. Fusing analytical security engineering with creative storytelling.
+        </p>
+    </header>
+
+    <main class="max-w-6xl mx-auto">
+        
+        <!-- THE BENTO GRID -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
+            
+            <!-- CARD 1: BIO / ID (Cream) -->
+            <div class="md:col-span-2 brutal-card bg-[#f4f0e6] p-6 flex flex-col md:flex-row gap-6">
+                <div class="w-full md:w-1/3 space-y-4">
+                    <div class="aspect-square bg-slate-300 border-4 border-black relative overflow-hidden flex items-center justify-center">
+                        <img src="Asian Boy Dp.jpg" alt="Arghyadeep Sarkar" class="absolute inset-0 w-full h-full object-cover" style="image-rendering: pixelated;">
+                    </div>
+                    <div class="flex gap-2">
+                        <div class="bg-black text-white text-[10px] px-2 py-1 font-bold uppercase border-2 border-black">Cyber Sec</div>
+                        <div class="bg-[#df673b] text-white text-[10px] px-2 py-1 font-bold uppercase border-2 border-black">Filmmaker</div>
+                    </div>
+                </div>
+
+                <div class="w-full md:w-2/3 flex flex-col">
+                    <div class="flex justify-between items-start mb-4">
+                        <h2 class="heading-brutal text-5xl">ARGHYADEEP <span class="text-3xl">🛡️</span></h2>
+                    </div>
+                    <p class="text-xs mb-6 leading-tight border-b-2 border-black pb-4">
+                        Computer Science Engineering student with strong expertise in Python, Java, SQL, and Cybersecurity. Experienced in developing security-focused applications, packet analysis tools, and SIEM monitoring systems. I am also a passionate filmmaker and design enthusiast.
+                    </p>
+                    
+                    <div class="grid grid-cols-3 gap-2 mb-6 text-[10px] font-bold uppercase">
+                        <div class="border-2 border-black p-1 bg-white/50">Role<br>Cyber Knight</div>
+                        <div class="border-2 border-black p-1 bg-white/50">Location<br>India</div>
+                        <div class="border-2 border-black p-1 bg-white/50">Hobbies<br>Film & Design</div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-3 mt-auto">
+                        <div class="magnetic-wrap">
+                            <a href="https://www.linkedin.com/in/arghyadeepsarkar" target="_blank" class="inline-block bg-[#0077b5] text-white px-3 py-2 border-2 border-black hover:bg-white hover:text-black transition-colors font-bold text-sm">
+                                LinkedIn
+                            </a>
+                        </div>
+                        <div class="magnetic-wrap">
+                            <a href="https://github.com/cyberknight2024" target="_blank" class="inline-block bg-[#333] text-white px-3 py-2 border-2 border-black hover:bg-white hover:text-black transition-colors font-bold text-sm">
+                                GitHub
+                            </a>
+                        </div>
+                        <div class="magnetic-wrap">
+                            <a href="https://www.behance.net/arghyadsarkar" target="_blank" class="inline-block bg-[#1769ff] text-white px-3 py-2 border-2 border-black hover:bg-white hover:text-black transition-colors font-bold text-sm">
+                                Behance
+                            </a>
+                        </div>
+                        <!-- Removed the old View Projects button from here to move it to the bottom -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 2: HELLO WORLD (Rainbow) -->
+            <div class="brutal-card rainbow-bg p-6 relative flex items-center justify-center min-h-[300px]">
+                <div class="absolute inset-0 scanlines"></div>
+                <h2 class="heading-brutal text-white text-6xl text-center relative z-10 drop-shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+                    HELLO<br>WORLD<span class="cursor-blink">_</span>
+                </h2>
+            </div>
+
+            <!-- CARD 3: EDUCATION (Yellow) -->
+            <div class="md:col-span-3 brutal-card bg-[#eeba2b] p-8 flex flex-col md:flex-row justify-between gap-10">
+                <div class="md:w-1/2">
+                    <h2 class="heading-brutal text-6xl mb-8">Education</h2>
+                    <div class="space-y-8">
+                        <div>
+                            <h3 class="font-bold text-2xl">Institute of Engineering and Management</h3>
+                            <div class="flex justify-between text-sm mt-1 border-b-2 border-black pb-2">
+                                <span>B.Tech in Computer Science Engineering</span>
+                                <span class="font-bold">2023 - Present</span>
+                            </div>
+                            <p class="mt-2 text-xs font-bold uppercase tracking-wider">Kolkata, India</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex items-center justify-center">
+                    <!-- CSS Pixel Art Retro PC Placeholder -->
+                    <div class="w-48 h-48 bg-[#ccc] border-4 border-black relative shadow-[8px_8px_0_0_#999] animate-float">
+                        <div class="absolute inset-2 bg-blue-900 border-4 border-black flex items-center justify-center">
+                            <span class="text-white text-xs font-mono">C:\><span class="cursor-blink">_</span></span>
+                        </div>
+                        <div class="absolute -bottom-10 left-1/2 -translate-x-1/2 w-56 h-4 bg-[#bbb] border-4 border-black"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CARD 4: CORE SKILLS (Orange) -->
+            <div class="brutal-card bg-[#df673b] p-6 text-white">
+                <div class="flex justify-between items-start mb-4">
+                    <h2 class="heading-brutal text-4xl">Core<br>Skills</h2>
+                    <div class="w-12 h-12 bg-white border-2 border-black flex items-center justify-center text-2xl">🛡️</div>
+                </div>
+                
+                <div class="chart-container">
+                    <canvas id="skillsChart"></canvas>
+                </div>
+
+                <div class="mt-6 text-xs leading-snug bg-black/20 p-2 border-l-4 border-white">
+                    Strong fundamentals in Object Oriented Programming, Computer Networks, Software Engineering, and Network Security.
+                </div>
+            </div>
+
+            <!-- CARD 5: TOOLS & TECH (Green) -->
+            <div class="md:col-span-2 brutal-card bg-[#7cb691] p-6">
+                <div class="flex justify-between items-start">
+                    <h2 class="heading-brutal text-4xl mb-4">Tools &<br>Technologies</h2>
+                    <div class="text-4xl inline-block animate-spin-slow">⚙️</div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mt-6">
+                    <div class="bg-black text-white p-4 border-2 border-black text-center font-bold" title="Python">Py</div>
+                    <div class="bg-black text-white p-4 border-2 border-black text-center font-bold" title="Java">Jv</div>
+                    <div class="bg-black text-white p-4 border-2 border-black text-center font-bold" title="SQL">Sql</div>
+                    <div class="bg-black text-white p-4 border-2 border-black text-center font-bold" title="Wireshark">Ws</div>
+                    <div class="bg-black text-white p-4 border-2 border-black text-center font-bold" title="Burp Suite">Bs</div>
+                </div>
+
+                <div class="mt-8 p-4 bg-white/30 border-4 border-black border-dashed flex items-center justify-center">
+                    <div class="text-center w-full">
+                        <span class="block font-bold mb-3">Frameworks & Methodologies</span>
+                        <div class="flex flex-wrap gap-2 justify-center text-xs font-bold uppercase">
+                            <span class="bg-white text-black border-2 border-black px-2 py-1">FastAPI</span>
+                            <span class="bg-white text-black border-2 border-black px-2 py-1">Scapy</span>
+                            <span class="bg-white text-black border-2 border-black px-2 py-1">Docker</span>
+                            <span class="bg-white text-black border-2 border-black px-2 py-1">SQLite</span>
+                            <span class="bg-white text-black border-2 border-black px-2 py-1">JWT</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ACTION BUTTONS / FOOTER NAVIGATION -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+            <div class="magnetic-wrap w-full">
+                <a href="projects.html" class="block brutal-card bg-[#eeba2b] p-8 text-center border-4 border-black hover:bg-black hover:text-[#eeba2b] transition-all group group-hover:scale-105">
+                    <div class="text-6xl mb-4 group-hover:animate-bounce">📁</div>
+                    <h2 class="heading-brutal text-4xl md:text-5xl">VIEW<br>PROJECTS</h2>
+                    <p class="font-bold text-sm mt-4 border-t-4 border-current pt-2 uppercase">Access System Logs</p>
+                </a>
+            </div>
+            
+            <div class="magnetic-wrap w-full">
+                <a href="certifications.html" class="block brutal-card bg-[#0f0] p-8 text-center border-4 border-black hover:bg-black hover:text-[#0f0] transition-all group group-hover:scale-105">
+                    <div class="text-6xl mb-4 group-hover:animate-bounce">📜</div>
+                    <h2 class="heading-brutal text-4xl md:text-5xl">OFFICIAL<br>CERTS</h2>
+                    <p class="font-bold text-sm mt-4 border-t-4 border-current pt-2 uppercase">Verify Credentials</p>
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Marquee Footer for Retro Vibe -->
+    <div class="border-y-4 border-[#0f0] bg-black text-[#0f0] py-2 overflow-hidden mb-10">
+        <div class="whitespace-nowrap font-mono text-sm uppercase tracking-widest animate-[marquee_20s_linear_infinite]" style="display: inline-block;">
+            *** SYSTEM SECURE *** ALL SYSTEMS NOMINAL *** UNAUTHORIZED ACCESS ATTEMPT LOGGED *** WELCOME USER_ARGHYADEEP *** *** SYSTEM SECURE *** ALL SYSTEMS NOMINAL *** UNAUTHORIZED ACCESS ATTEMPT LOGGED *** WELCOME USER_ARGHYADEEP ***
+        </div>
+    </div>
+    <style>
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+    </style>
+
+    <footer class="max-w-6xl mx-auto pb-10 text-white/50 text-xs flex justify-between uppercase tracking-tighter">
+        <span>Architectural Prompt: Neo-Brutalism v2025</span>
+        <span>Interactive Blueprint &copy; 2024</span>
+    </footer>
+
+    <!-- Visualization & Content Choices:
+    - Report Info -> Goal -> Viz/Presentation Method -> Interaction -> Justification -> Library
+    - Skill Mastery -> Compare Proficiency -> Horizontal Bar Chart -> Hover Tooltips -> Provides quantitative depth to the design -> Chart.js
+    - Retro Aesthetic -> Emotional Engagement -> Scanline CSS Overlay -> Interactive Hover -> Mimics old CRT monitors found in the image -> CSS/HTML
+    - UX Architecture -> Usability -> Magnetic Buttons -> JS Cursor Attraction -> Enhances modern tactile feel within retro style -> Vanilla JS
+    - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. Visual symbols use Unicode and CSS shapes. -->
+
+    <script>
+        // --- DATA VISUALIZATION ---
+        const initCharts = () => {
+            const ctx = document.getElementById('skillsChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Cybersecurity', 'Python/Java', 'Filmmaking', 'Design'],
+                    datasets: [{
+                        label: 'Mastery Level',
+                        data: [90, 85, 75, 80],
+                        backgroundColor: '#111111',
+                        borderColor: '#ffffff',
+                        borderWidth: 2,
+                        borderRadius: 0
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    maintainAspectRatio: false,
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { 
+                            beginAtZero: true, 
+                            max: 100,
+                            grid: { display: false },
+                            ticks: { display: false }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: { 
+                                color: '#ffffff',
+                                font: { weight: 'bold', family: 'Space Grotesk' }
+                            }
+                        }
+                    }
+                }
+            });
+        };
+
+        // --- MAGNETIC BUTTON LOGIC ---
+        const initMagnetics = () => {
+            const wrappers = document.querySelectorAll('.magnetic-wrap');
+            
+            wrappers.forEach(wrap => {
+                wrap.addEventListener('mousemove', (e) => {
+                    const rect = wrap.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    
+                    const deltaX = (e.clientX - centerX) * 0.3;
+                    const deltaY = (e.clientY - centerY) * 0.3;
+                    
+                    wrap.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+                });
+
+                wrap.addEventListener('mouseleave', () => {
+                    wrap.style.transform = `translate(0, 0)`;
+                });
+            });
+        };
+
+        // --- CARD TILT EFFECT ---
+        const initTilt = () => {
+            const cards = document.querySelectorAll('.brutal-card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = (y - centerY) / 25;
+                    const rotateY = (centerX - x) / 25;
+                    
+                    // Subtle 3D tilt without breaking the brutalist flat look too much
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0)`;
+                });
+            });
+        };
+
+        // Initialize Everything
+        window.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            initMagnetics();
+            initTilt();
+        });
+    </script>
+</body>
+</html>
